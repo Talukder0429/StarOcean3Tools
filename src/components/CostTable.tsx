@@ -5,8 +5,10 @@ export const CostTable = (props: {costMap: Map<number, Item<Profession>[]>}) => 
     const rows = [...props.costMap.entries()].map(([cost, items]) => {
         return (
             <TableRow key={cost}>
-                <TableCell>{cost}</TableCell>
-                <TableCell>{items.length ? items.map((i) => i.item).join(', ') : 'None'}</TableCell>
+                <TableCell className="text-center">{cost}</TableCell>
+                <TableCell className="max-w-[320px]">
+                    {items.length ? items.map((i) => i.item).join(', ') : 'None'}
+                </TableCell>
             </TableRow>
         );
     });
@@ -15,8 +17,8 @@ export const CostTable = (props: {costMap: Map<number, Item<Profession>[]>}) => 
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead className="max-w-[180px]">Exact Price(s) (Fol)</TableHead>
-                    <TableHead className="max-w-[360px]">Conflicting Items</TableHead>
+                    <TableHead className="text-center">Exact Price(s) (Fol)</TableHead>
+                    <TableHead className="text-center">Conflicting Items</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>{rows}</TableBody>

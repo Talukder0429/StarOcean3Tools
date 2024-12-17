@@ -77,10 +77,10 @@ export const Stats = (props: {successChance: number; boostItem: string; selected
                 </div>
             </div>
             <div className="flex flex-col gap-2">
-                <div className="text-2xl">Difficulty: {props.selectedItem ? props.selectedItem.rating : 0} / 100</div>
-                <div className="text-2xl">Base Cost: {props.selectedItem ? props.selectedItem.cost : 0} Fol</div>
-                <div className="text-2xl">Inventors:</div>
-                <ul className="list-disc list-inside text-lg">
+                <div className="text-xl">Difficulty: {props.selectedItem ? props.selectedItem.rating : 0} / 100</div>
+                <div className="text-xl">Base Cost: {props.selectedItem ? props.selectedItem.cost : 0} Fol</div>
+                <div className="text-xl">Inventors:</div>
+                <ul className="list-disc list-inside">
                     {props.selectedItem &&
                         [...props.selectedItem.inventors.values()].map((inventor) => (
                             <li className="ml-2" key={inventor}>

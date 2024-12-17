@@ -45,6 +45,14 @@ export const Calculator = <P extends Profession, T extends P>(props: {
         </SelectItem>
     ));
 
+    const ColoredPercent = (props: {value: number}) => {
+        return (
+            <span className={props.value > 0 ? 'text-red-600' : props.value < 0 ? 'text-green-600 font-semibold' : ''}>
+                {props.value > 0 ? `+${props.value.toString()}` : props.value}%
+            </span>
+        );
+    };
+
     // Inventor Change Logic
 
     const updateSelectedInventors = (row: Row<TableInventorType>) => {
@@ -99,7 +107,7 @@ export const Calculator = <P extends Profession, T extends P>(props: {
                 const canCreateItem = selectedItem ? selectedItem.inventors.has(row.original.inventor) : false;
 
                 return (
-                    <div className="flex gap-4 items-center">
+                    <div className="flex gap-4 items-center pl-4">
                         {row.original.inventor} {!!canCreateItem && <UserCheck className="h-6 w-6" />}
                     </div>
                 );
@@ -120,6 +128,9 @@ export const Calculator = <P extends Profession, T extends P>(props: {
                     </Button>
                 );
             },
+            cell: ({row}) => {
+                return <div className="text-center">{row.original.skill}</div>;
+            },
             invertSorting: true
         },
         {
@@ -131,9 +142,16 @@ export const Calculator = <P extends Profession, T extends P>(props: {
                         onClick={() => {
                             column.toggleSorting(column.getIsSorted() === 'asc');
                         }}>
-                        Time Modifier (%)
+                        Time Modifier
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
+                );
+            },
+            cell: ({row}) => {
+                return (
+                    <div className="text-center">
+                        <ColoredPercent value={row.original.time} />
+                    </div>
                 );
             }
         },
@@ -146,9 +164,16 @@ export const Calculator = <P extends Profession, T extends P>(props: {
                         onClick={() => {
                             column.toggleSorting(column.getIsSorted() === 'asc');
                         }}>
-                        Cost Modifier (%)
+                        Cost Modifier
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
+                );
+            },
+            cell: ({row}) => {
+                return (
+                    <div className="text-center">
+                        <ColoredPercent value={row.original.cost} />
+                    </div>
                 );
             }
         }
@@ -269,15 +294,19 @@ export const Calculator = <P extends Profession, T extends P>(props: {
                     <DataTable columns={columns} data={props.inventors} />
                 </CardContent>
                 <CardFooter>
-                    <div className="flex justify-around gap-4 p-4 text-lg w-full">
+                    <div className="flex justify-around gap-4 p-4 text-xl w-full">
                         <div>Team Skill: {totalSkill}</div>
                         <div>
                             Time Modifier:{' '}
-                            <span className={timeMod > 0 ? 'text-red-600' : 'text-green-600'}>{timeMod}%</span>
+                            <span>
+                                <ColoredPercent value={timeMod} />
+                            </span>
                         </div>
                         <div>
                             Cost Modifier:{' '}
-                            <span className={costMod > 0 ? 'text-red-600' : 'text-green-600'}>{costMod}%</span>
+                            <span>
+                                <ColoredPercent value={costMod} />
+                            </span>
                         </div>
                     </div>
                 </CardFooter>
