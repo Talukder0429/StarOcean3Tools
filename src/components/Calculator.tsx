@@ -1,63 +1,84 @@
 import {useEffect, useState} from 'react';
-// import DataTable, { TableColumn } from "react-data-table-component";
-// import ReactTooltip from "react-tooltip";
-// import Select from "react-select";
-// import CircularProgressbar from "react-circular-progressbar";
-// import "react-circular-progressbar/dist/styles.css";
-import {Inventor, Item, Profession} from '../types';
+import {Inventor, Item, LocalState, Profession} from '@/types';
+import {Stats} from '@/components/Stats';
+import {CostTable} from '@/components/CostTable';
+
+import {ArrowUpDown, UserCheck} from 'lucide-react';
 import {ColumnDef, Row} from '@tanstack/react-table';
 import {DataTable} from '@/components/ui/data-table';
+import {Button} from '@/components/ui/button';
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {ArrowUpDown, UserCheck} from 'lucide-react';
-import {Button} from './ui/button';
 
-import 'react-circular-progressbar/dist/styles.css';
-
-import 'react-circular-progressbar/dist/styles.css';
-import {Stats} from './Stats';
-import {CostTable} from './CostTable';
-import {Card, CardContent, CardFooter, CardHeader, CardTitle} from './ui/card';
-
-export const Calculator = <P extends Profession, T extends P>(props: {
+export const Calculator = <P extends Profession>(props: {
     profession: P;
-    items: Item<T>[];
-    inventors: Inventor<T>[];
+    inventors: Inventor<P>[];
+    items: Item<P>[];
     boostItem: string;
 }) => {
-    type TableType = typeof props.profession;
-    type TableItemType = Item<TableType>;
-    type TableInventorType = Inventor<TableType>;
-    // const prvSelectedInventors = JSON.parse(sessionStorage.getItem(props.ic) || "[]");
-
-    // const prvSelectedItem = JSON.parse(sessionStorage.getItem(props.ic + "item") || "[]");
-
-    // const prvBoostSelected = JSON.parse(sessionStorage.getItem(props.ic + "boost") || "true");
-
-    const [selectedInventors, setSelectedInventors] = useState<Set<TableInventorType>>(new Set());
-    const [selectedItem, setSelectedItem] = useState<TableItemType>(); //prvSelectedItem.length === 0 ? null : prvSelectedItem,
+    const [selectedInventors, setSelectedInventors] = useState<Set<Inventor<P>>>(new Set());
+    const [selectedItem, setSelectedItem] = useState<Item<P>>();
     const [totalSkill, setTotalSkill] = useState(0);
     const [timeMod, setTimeMod] = useState(0);
     const [costMod, setCostMod] = useState(0);
     const [costMap, setCostMap] = useState<Map<number, Item<P>[]>>(new Map());
-    const selectableItems = props.items.map((item, index) => (
-        <SelectItem key={item.item} value={index.toString()}>
-            {item.item}
-        </SelectItem>
-    ));
+
+    const SelectableItems = () =>
+        props.items.map((item, index) => (
+            <SelectItem key={item.item} value={index.toString()}>
+                {item.item}
+            </SelectItem>
+        ));
 
     const ColoredPercent = (props: {value: number}) => {
         return (
-            <span className={props.value > 0 ? 'text-red-600' : props.value < 0 ? 'text-green-600 font-semibold' : ''}>
+            <span
+                className={props.value > 0 ? 'text-orange-400' : props.value < 0 ? 'text-green-400 font-semibold' : ''}>
                 {props.value > 0 ? `+${props.value.toString()}` : props.value}%
             </span>
         );
     };
 
-    // Inventor Change Logic
+    // save new settings
+    const updateLocalstorage = (inventors?: Set<Inventor<P>>, item?: Item<P>) => {
+        const state: LocalState = {
+            selectedInventors: [...selectedInventors.values()].map((inventor) => inventor.inventor),
+            selectedItem: selectedItem?.item
+        };
 
-    const updateSelectedInventors = (row: Row<TableInventorType>) => {
+        if (inventors) {
+            state.selectedInventors = [...inventors.values()].map((inventor) => inventor.inventor);
+        }
+
+        if (item) {
+            state.selectedItem = item.item;
+        }
+
+        localStorage.setItem(props.profession, JSON.stringify(state));
+    };
+
+    // load previous settings
+    useEffect(() => {
+        const state = JSON.parse(localStorage.getItem(props.profession) ?? '{}') as LocalState;
+
+        const selectedInventors = state.selectedInventors ?? [];
+        const selectedItem = state.selectedItem ?? null;
+
+        if (selectedInventors.length) {
+            const inventors = props.inventors.filter((inventor) => selectedInventors.includes(inventor.inventor));
+            setSelectedInventors(new Set([...inventors]));
+        }
+
+        if (selectedItem) {
+            const item = props.items.find((item) => item.item === selectedItem);
+            setSelectedItem(item);
+        }
+    }, [props.profession, props.inventors, props.items]);
+
+    // inventor change logic
+    const updateSelectedInventors = (row: Row<Inventor<P>>) => {
         const inventor = row.original;
-        const addInventor = !row.getIsSelected();
+        const addInventor = !selectedInventors.has(inventor);
 
         setSelectedInventors((currentSelection) => {
             const updatedInventors = new Set(currentSelection);
@@ -66,23 +87,24 @@ export const Calculator = <P extends Profession, T extends P>(props: {
             } else {
                 updatedInventors.delete(inventor);
             }
+
+            updateLocalstorage(updatedInventors, undefined);
             return updatedInventors;
         });
-
-        row.toggleSelected(addInventor);
     };
 
-    const columns: ColumnDef<TableInventorType>[] = [
+    // inventor table columns
+    const columns: ColumnDef<Inventor<P>>[] = [
         {
             id: 'select',
             cell: ({row}) => (
                 <input
                     type="checkbox"
-                    checked={row.getIsSelected()}
+                    checked={selectedInventors.has(row.original)}
                     onChange={() => {
                         updateSelectedInventors(row);
                     }}
-                    disabled={selectedInventors.size >= 3 && !row.getIsSelected()}
+                    disabled={selectedInventors.size >= 3 && !selectedInventors.has(row.original)}
                 />
             ),
             enableSorting: false,
@@ -179,6 +201,7 @@ export const Calculator = <P extends Profession, T extends P>(props: {
         }
     ];
 
+    // update team stats on inventor change
     useEffect(() => {
         let newTotalSkill = 0;
         let newTimeMod = 0;
@@ -195,12 +218,11 @@ export const Calculator = <P extends Profession, T extends P>(props: {
         setCostMod(newCostMod);
     }, [selectedInventors]);
 
-    // Item Change Logic
-
+    // update item costs
     const updateCostMap = () => {
         if (!selectedItem) return;
 
-        const inventorRequirementMet = (item: TableItemType) => {
+        const inventorRequirementMet = (item: Item<P>) => {
             const selectedInventorNames = new Set([...selectedInventors.values()].map((i) => i.inventor));
 
             return selectedInventorNames.intersection(item.inventors).size > 0;
@@ -230,7 +252,7 @@ export const Calculator = <P extends Profession, T extends P>(props: {
         };
 
         const generateCostMap = () => {
-            const costMap = new Map<number, TableItemType[]>();
+            const costMap = new Map<number, Item<P>[]>();
 
             if (!inventorRequirementMet(selectedItem)) {
                 return costMap;
@@ -258,26 +280,33 @@ export const Calculator = <P extends Profession, T extends P>(props: {
 
         const costMap = generateCostMap();
         setCostMap(costMap);
-        //   sessionStorage.setItem(this.props.ic + "item", JSON.stringify(this.state.selectedItem));
     };
 
+    // update item costs on item change
     useEffect(updateCostMap, [selectedInventors, selectedItem, props.items]);
 
     return (
-        <div className="flex flex-wrap gap-8 p-4">
+        <div className="flex flex-wrap gap-8 p-4 justify-center">
             <Card>
                 <CardHeader>
                     <CardTitle>Select Item</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-8">
                     <Select
+                        value={selectedItem ? props.items.indexOf(selectedItem).toString() : undefined}
                         onValueChange={(idx) => {
-                            setSelectedItem(props.items[parseInt(idx)]);
+                            setSelectedItem(() => {
+                                const newItem = props.items[parseInt(idx)];
+                                updateLocalstorage(undefined, newItem);
+                                return newItem;
+                            });
                         }}>
                         <SelectTrigger className="min-w-[320px]">
                             <SelectValue placeholder="Select Item..." />
                         </SelectTrigger>
-                        <SelectContent>{selectableItems}</SelectContent>
+                        <SelectContent>
+                            <SelectableItems />
+                        </SelectContent>
                     </Select>
                     <Stats
                         successChance={selectedItem && costMap.size > 1 ? totalSkill - selectedItem.rating : 0}
@@ -286,6 +315,7 @@ export const Calculator = <P extends Profession, T extends P>(props: {
                     />
                 </CardContent>
             </Card>
+
             <Card>
                 <CardHeader>
                     <CardTitle>Select Team</CardTitle>
@@ -323,54 +353,3 @@ export const Calculator = <P extends Profession, T extends P>(props: {
         </div>
     );
 };
-
-//   selectedInventorsChange = (selectedRowState: {
-//     allSelected: boolean;
-//     selectedCount: number;
-//     selectedRows: Inventor[];
-//   }) => {
-//     sessionStorage.setItem(this.props.ic, JSON.stringify(selectedRowState.selectedRows));
-
-//     let skillSum = this.state.hasBoost ? 20 : 0;
-//     let timeSum = 0;
-//     let costSum = 0;
-
-//     selectedRowState.selectedRows.forEach((i: Inventor) => {
-//       skillSum += i.skill;
-//       timeSum += i.time;
-//       costSum += i.cost;
-//     });
-
-//     this.setState(
-//       {
-//         selectedInventors: selectedRowState.selectedRows,
-//         selectedCount: selectedRowState.selectedCount,
-//         totalSkill: skillSum,
-//         timeMod: timeSum,
-//         costMod: costSum,
-//       },
-//       () => {
-//         if (this.state.selectedItem !== null && this.canMakeItem(this.state.selectedItem)) this.calcCosts();
-//       }
-//     );
-//   };
-
-//   loadPrvSelectedInventors = (row: Inventor) => {
-//     let res = false;
-//     this.state.selectedInventors.forEach((i: Inventor) => {
-//       if (i.inventor === row.inventor) {
-//         res = res || true;
-//       }
-//     });
-//     return res;
-//   };
-
-//   disableInventors = (row: Inventor) => {
-//     let res = false;
-//     this.state.selectedInventors.forEach((i: Inventor) => {
-//       if (i.inventor === row.inventor) {
-//         res = res || true;
-//       }
-//     });
-//     return !res && this.state.selectedCount > 2;
-//   };

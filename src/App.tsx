@@ -2,14 +2,23 @@ import {Calculator} from '@/components/Calculator';
 import {Profession} from '@/types';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import itemStats from '@/data/items/itemStats';
-import inventorStats from './data/inventorStats';
-import boostItems from './data/boostItems';
+import inventorStats from '@/data/inventorStats';
+import boostItems from '@/data/boostItems';
+import {ThemeProvider} from '@/components/theme-provider';
+import {ModeToggle} from './components/ModeToggle';
+import FAQ from '@/components/FAQ';
 
 const tabTrigger = Object.values(Profession).map((p) => (
     <TabsTrigger value={p} key={p}>
         {p}
     </TabsTrigger>
 ));
+
+tabTrigger.push(
+    <TabsTrigger value="FAQ" key="FAQ">
+        FAQ
+    </TabsTrigger>
+);
 
 const tabContent = Object.values(Profession).map((p) => (
     <TabsContent value={p} key={p}>
@@ -21,16 +30,26 @@ const tabContent = Object.values(Profession).map((p) => (
     </TabsContent>
 ));
 
+tabContent.push(
+    <TabsContent value="FAQ" key="FAQ">
+        <FAQ />
+    </TabsContent>
+);
+
 function App() {
     return (
-        <Tabs>
-            <TabsList>
-                {tabTrigger}
-                {/* <Tab style={{ color: "#3e98c7", fontStyle: "italic" }}>Extras</Tab> */}
-            </TabsList>
-
-            {tabContent}
-        </Tabs>
+        <ThemeProvider defaultTheme="dark" storageKey="theme">
+            <div className="absolute right-2 top-2">
+                <ModeToggle />
+            </div>
+            <h1 className="text-4xl text-center p-8">Star Ocean 3 Tools</h1>
+            <Tabs defaultValue={Profession.ALCH}>
+                <div className="text-center">
+                    <TabsList>{tabTrigger}</TabsList>
+                </div>
+                {tabContent}
+            </Tabs>
+        </ThemeProvider>
     );
 }
 

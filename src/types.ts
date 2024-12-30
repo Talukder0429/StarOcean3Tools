@@ -23,3 +23,9 @@ export interface Item<T extends Profession> {
     rating: number;
     inventors: Set<(typeof inventorNames)[T][number]>;
 }
+
+export interface LocalState {
+    selectedInventors?: string[];
+    selectedItem?: string;
+    hasBoostItem?: boolean;
+}

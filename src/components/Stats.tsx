@@ -14,11 +14,14 @@ export const Stats = (props: {successChance: number; boostItem: string; selected
         const newChance = Math.max(props.successChance ? props.successChance + (hasBoost ? 20 : 0) : 0, 0);
 
         if (newChance > 66) {
-            setColor('#6ADD0D');
+            // Green 400
+            setColor('#4ade80');
         } else if (newChance < 33) {
-            setColor('#FF4646');
+            // Red 400
+            setColor('#f87171');
         } else {
-            setColor('#FFA703');
+            // Orange 400
+            setColor('#fb923c');
         }
 
         setSuccessChance(newChance);
