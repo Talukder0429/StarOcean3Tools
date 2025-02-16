@@ -7,8 +7,9 @@ import {ArrowUpDown, UserCheck} from 'lucide-react';
 import {ColumnDef, Row} from '@tanstack/react-table';
 import {DataTable} from '@/components/ui/data-table';
 import {Button} from '@/components/ui/button';
-import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
+import {useToast} from '@/hooks/use-toast';
 
 export const Calculator = <P extends Profession>(props: {
     profession: P;
@@ -22,6 +23,7 @@ export const Calculator = <P extends Profession>(props: {
     const [timeMod, setTimeMod] = useState(0);
     const [costMod, setCostMod] = useState(0);
     const [costMap, setCostMap] = useState<Map<number, Item<P>[]>>(new Map());
+    const {toast} = useToast();
 
     const SelectableItems = () =>
         props.items.map((item, index) => (
@@ -59,6 +61,7 @@ export const Calculator = <P extends Profession>(props: {
 
     // load previous settings
     useEffect(() => {
+        let showToast = false;
         const state = JSON.parse(localStorage.getItem(props.profession) ?? '{}') as LocalState;
 
         const selectedInventors = state.selectedInventors ?? [];
@@ -67,13 +70,23 @@ export const Calculator = <P extends Profession>(props: {
         if (selectedInventors.length) {
             const inventors = props.inventors.filter((inventor) => selectedInventors.includes(inventor.inventor));
             setSelectedInventors(new Set([...inventors]));
+            showToast = true;
         }
 
         if (selectedItem) {
             const item = props.items.find((item) => item.item === selectedItem);
             setSelectedItem(item);
+            showToast = true;
         }
-    }, [props.profession, props.inventors, props.items]);
+
+        if (showToast) {
+            toast({
+                description: 'Previous Selections Loaded',
+                variant: 'success',
+                duration: 1500
+            });
+        }
+    }, []);
 
     // inventor change logic
     const updateSelectedInventors = (row: Row<Inventor<P>>) => {
@@ -287,9 +300,9 @@ export const Calculator = <P extends Profession>(props: {
 
     return (
         <div className="flex flex-wrap gap-8 p-4 justify-center">
-            <Card>
+            <Card className="min-w-[320px] w-full sm:max-w-[480px]">
                 <CardHeader>
-                    <CardTitle>Select Item</CardTitle>
+                    <CardTitle className="text-center text-lg">Select Item</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-8">
                     <Select
@@ -301,7 +314,7 @@ export const Calculator = <P extends Profession>(props: {
                                 return newItem;
                             });
                         }}>
-                        <SelectTrigger className="min-w-[320px]">
+                        <SelectTrigger className="min-w-full">
                             <SelectValue placeholder="Select Item..." />
                         </SelectTrigger>
                         <SelectContent>
@@ -313,18 +326,28 @@ export const Calculator = <P extends Profession>(props: {
                         boostItem={props.boostItem}
                         selectedItem={selectedItem}
                     />
+                    <CostTable costMap={costMap} />
                 </CardContent>
             </Card>
 
-            <Card>
+            <Card className="min-w-[320px] w-full sm:max-w-[800px]">
                 <CardHeader>
-                    <CardTitle>Select Team</CardTitle>
+                    <CardTitle className="text-center text-lg">Select Team</CardTitle>
+                    <CardDescription className="w-max mx-auto">
+                        <div className="flex gap-2 items-center">
+                            <UserCheck className="h-6 w-6" />{' '}
+                            <div>
+                                <div>Can Create Item</div>
+                                <div>Minimum 1 Required</div>
+                            </div>
+                        </div>
+                    </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <DataTable columns={columns} data={props.inventors} />
                 </CardContent>
                 <CardFooter>
-                    <div className="flex justify-around gap-4 p-4 text-xl w-full">
+                    <div className="flex flex-col gap-4 p-4 text-xl w-max mx-auto">
                         <div>Team Skill: {totalSkill}</div>
                         <div>
                             Time Modifier:{' '}
@@ -340,15 +363,6 @@ export const Calculator = <P extends Profession>(props: {
                         </div>
                     </div>
                 </CardFooter>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Resulting Costs</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <CostTable costMap={costMap} />
-                </CardContent>
             </Card>
         </div>
     );

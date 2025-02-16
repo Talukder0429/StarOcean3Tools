@@ -6,7 +6,7 @@ export const CostTable = (props: {costMap: Map<number, Item<Profession>[]>}) => 
         return (
             <TableRow key={cost}>
                 <TableCell className="text-center">{cost}</TableCell>
-                <TableCell className="max-w-[320px]">
+                <TableCell className="max-w-[320px] text-center text-pretty">
                     {items.length ? items.map((i) => i.item).join(', ') : 'None'}
                 </TableCell>
             </TableRow>
@@ -17,7 +17,7 @@ export const CostTable = (props: {costMap: Map<number, Item<Profession>[]>}) => 
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead className="text-center">Exact Price(s) (Fol)</TableHead>
+                    <TableHead className="text-center">Price (Fol)</TableHead>
                     <TableHead className="text-center">Conflicting Items</TableHead>
                 </TableRow>
             </TableHeader>

@@ -6,7 +6,8 @@ import inventorStats from '@/data/inventorStats';
 import boostItems from '@/data/boostItems';
 import {ThemeProvider} from '@/components/theme-provider';
 import {ModeToggle} from './components/ModeToggle';
-import FAQ from '@/components/FAQ';
+import {FAQ} from '@/components/FAQ';
+import {Toaster} from '@/components/ui/toaster';
 
 const tabTrigger = Object.values(Profession).map((p) => (
     <TabsTrigger value={p} key={p}>
@@ -42,9 +43,10 @@ function App() {
             <div className="absolute right-2 top-2">
                 <ModeToggle />
             </div>
+            <Toaster />
             <h1 className="text-4xl text-center p-8">Star Ocean 3 Tools</h1>
             <Tabs defaultValue={Profession.ALCH}>
-                <div className="text-center">
+                <div className="text-center overflow-x-auto">
                     <TabsList>{tabTrigger}</TabsList>
                 </div>
                 {tabContent}

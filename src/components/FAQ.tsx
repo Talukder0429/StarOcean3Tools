@@ -1,76 +1,93 @@
-export default function Extras() {
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Button} from './ui/button';
+import {useToast} from '@/hooks/use-toast';
+
+export const FAQ = () => {
+    const {toast} = useToast();
+
     return (
-        <div className="left-align extra-tab">
-            <h3>Item Refining FAQ</h3>
-            <div className="italics indent">Which items do what, and their upgrade paths!</div>
-            <div className="indent">
-                <a
-                    href="https://gamefaqs.gamespot.com/ps2/536705-star-ocean-till-the-end-of-time/faqs/33178"
-                    target="_blank"
-                    rel="noreferrer">
-                    A guide by Demonfayt
-                </a>
-            </div>
-            <h3 className="extra-h3">Support Item{' >>> '}Location</h3>
-            <p className="indent">Alchemist&apos;s Stone (ALCH){' >>> '}Mosel Dunes</p>
-            <p className="indent">Multi-Flask (CMPD){' >>> '}Arias</p>
-            <p className="indent">Keen Kitchen Knife (COOK){' >>> '}Gemity [buy for 55,000 Fol]</p>
-            <p className="indent">Cherubic Bust (CRFT){' >>> '}Palmira Plains</p>
-            <p className="indent">NC Program Disk (ENG){' >>> '}Moonbase</p>
-            <p className="indent">Smithy Hammer (SMTH){' >>> '}Arkives [Flad&apos;s House]</p>
-            <p className="indent">Enchanted Pen (WRIT){' >>> '}Shrine of Kaddan [RoD needed]</p>
-            <h3 className="extra-h3">Special Thanks to:</h3>
-            <p className="indent">
-                <span className="bold">3vrB257A5gq3fg</span> for laying down the foundations in their{' '}
-                <a
-                    href="https://gamefaqs.gamespot.com/ps2/536705-star-ocean-till-the-end-of-time/faqs/77830"
-                    target="_blank"
-                    rel="noreferrer">
-                    guide
-                </a>
-                !
-            </p>
-            <p className="indent">
-                <span className="bold">A I e x</span> for their{' '}
-                <a
-                    href="https://gamefaqs.gamespot.com/ps2/536705-star-ocean-till-the-end-of-time/faqs/32232"
-                    target="_blank"
-                    rel="noreferrer">
-                    guide
-                </a>{' '}
-                used for cross-referencing!
-            </p>
-            <p className="indent">
-                <span className="bold">Aerius</span> and their{' '}
-                <a href="http://pendell.atspace.cc/so3ic.html" target="_blank" rel="noreferrer">
-                    crafting calculator
-                </a>{' '}
-                used for testing and ideas!
-            </p>
-            <div className="contact">
-                <p className="bold italics">This was created as a passion project, and a learning experience.</p>
-                <div className="pb">
-                    <div className="pb">If you find a bug or inaccuracy:</div>
-                    First:{' '}
-                    <button
-                        onClick={() => {
-                            sessionStorage.clear();
-                            localStorage.clear();
-                        }}>
-                        Clear Web Storage
-                    </button>
-                </div>
-                <div className="pb">
-                    Still broken? Please <a href="mailto:arnob_talukder@hotmail.com?subject=SO3-IC-BUG">contact me</a>!
-                </div>
-                <div className="pb">
-                    The src code can be found on my{' '}
-                    <a href="https://github.com/Talukder0429/so3ic" target="_blank" rel="noreferrer">
-                        GitHub repo
-                    </a>
-                    .
-                </div>
-            </div>
+        <div className="p-4">
+            <Card className="w-max mx-auto">
+                <CardHeader>
+                    <CardTitle className="text-center text-lg">Item Refining FAQ</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <h3>Support Items and their Location</h3>
+                    <ul className="ml-4">
+                        <li>Alchemist&apos;s Stone (ALCH) &gt; Mosel Dunes</li>
+                        <li>Multi-Flask (CMPD) &gt; Arias</li>
+                        <li>Keen Kitchen Knife (COOK) &gt; Gemity (Buy for 55,000 Fol)</li>
+                        <li>Cherubic Bust (CRFT) &gt; Palmira Plains</li>
+                        <li>NC Program Disk (ENG) &gt; Moonbase</li>
+                        <li>Smithy Hammer (SMTH) &gt; Arkives (Flad&apos;s House)</li>
+                        <li>Enchanted Pen (WRIT) &gt; Shrine of Kaddan (RoD Required)</li>
+                    </ul>
+
+                    <h3 className="mt-4">Special Thanks to:</h3>
+                    <ul className="ml-4">
+                        <li>
+                            <span>
+                                <span className="bold">3vrB257A5gq3fg</span>, for laying down the foundations in their{' '}
+                                <a
+                                    href="https://gamefaqs.gamespot.com/ps2/536705-star-ocean-till-the-end-of-time/faqs/77830"
+                                    target="_blank"
+                                    rel="noreferrer">
+                                    guide
+                                </a>
+                                !
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <span className="bold">A I e x</span>, and their{' '}
+                                <a
+                                    href="https://gamefaqs.gamespot.com/ps2/536705-star-ocean-till-the-end-of-time/faqs/32232"
+                                    target="_blank"
+                                    rel="noreferrer">
+                                    guide
+                                </a>{' '}
+                                used for cross-referencing!
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <span className="bold">Aerius</span>, and their{' '}
+                                <a href="http://pendell.atspace.cc/so3ic.html" target="_blank" rel="noreferrer">
+                                    crafting calculator
+                                </a>{' '}
+                                used for testing and ideas!
+                            </span>
+                        </li>
+                    </ul>
+                </CardContent>
+                <CardFooter>
+                    <div>
+                        <h4>If you find a bug or inaccuracy</h4>
+                        <ol className="list-decimal list-inside mt-2 pl-4">
+                            <li>
+                                Try to{' '}
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        sessionStorage.clear();
+                                        localStorage.clear();
+                                        toast({
+                                            description: 'Local Web Storage Cleared',
+                                            variant: 'success',
+                                            duration: 1500
+                                        });
+                                    }}>
+                                    Clear Local Web Storage
+                                </Button>
+                            </li>
+                            <li className="mt-2">
+                                Still broken? Please{' '}
+                                <a href="mailto:arnob_talukder@hotmail.com?subject=SO3-IC-BUG">contact me</a>!
+                            </li>
+                        </ol>
+                    </div>
+                </CardFooter>
+            </Card>
         </div>
     );
-}
+};
