@@ -8,27 +8,6 @@ const writItems: Item<Profession.WRIT>[] = [
         inventors: new Set(['Sophia', 'Maria', 'Mirage', 'Osman the Sage'])
     },
     {
-        item: 'Crude Book',
-        cost: 12,
-        rating: 1,
-        inventors: new Set([
-            'Fayt',
-            'Sophia',
-            'Cliff',
-            'Maria',
-            'Nel',
-            'Albel',
-            'Peppita',
-            'Roger',
-            'Mirage',
-            'Adray',
-            'Cornelius',
-            'Mishell',
-            'Count Noppen',
-            'Osman the Sage'
-        ])
-    },
-    {
         item: 'Crumbling Tome',
         cost: 1500,
         rating: 60,

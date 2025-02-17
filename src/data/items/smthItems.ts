@@ -248,7 +248,7 @@ const smthItems: Item<Profession.SMTH>[] = [
     {
         item: 'Elemental Leather',
         cost: 6720,
-        rating: 90,
+        rating: 95,
         inventors: new Set(['Maria', 'Nel', 'Albel', 'Mirage', 'Adray', 'Gusto'])
     },
     {

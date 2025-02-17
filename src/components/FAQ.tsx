@@ -58,6 +58,7 @@ export const FAQ = () => {
                                 used for testing and ideas!
                             </span>
                         </li>
+                        <li>Bradygames and their strategy guide for Sphere 211!</li>
                     </ul>
                 </CardContent>
                 <CardFooter>
