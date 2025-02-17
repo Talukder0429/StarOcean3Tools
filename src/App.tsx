@@ -8,12 +8,19 @@ import {ThemeProvider} from '@/components/theme-provider';
 import {ModeToggle} from './components/ModeToggle';
 import {FAQ} from '@/components/FAQ';
 import {Toaster} from '@/components/ui/toaster';
+import {S211} from './components/S211';
 
 const tabTrigger = Object.values(Profession).map((p) => (
     <TabsTrigger value={p} key={p}>
         {p}
     </TabsTrigger>
 ));
+
+tabTrigger.push(
+    <TabsTrigger value="S211" key="S211">
+        S211
+    </TabsTrigger>
+);
 
 tabTrigger.push(
     <TabsTrigger value="FAQ" key="FAQ">
@@ -30,6 +37,12 @@ const tabContent = Object.values(Profession).map((p) => (
             boostItem={boostItems[p]}></Calculator>
     </TabsContent>
 ));
+
+tabContent.push(
+    <TabsContent value="S211" key="S211">
+        <S211 />
+    </TabsContent>
+);
 
 tabContent.push(
     <TabsContent value="FAQ" key="FAQ">

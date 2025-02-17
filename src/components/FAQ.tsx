@@ -6,8 +6,8 @@ export const FAQ = () => {
     const {toast} = useToast();
 
     return (
-        <div className="p-4">
-            <Card className="w-max mx-auto">
+        <div className="p-4 flex">
+            <Card className="mx-auto">
                 <CardHeader>
                     <CardTitle className="text-center text-lg">Item Refining FAQ</CardTitle>
                 </CardHeader>
@@ -65,9 +65,10 @@ export const FAQ = () => {
                         <h4>If you find a bug or inaccuracy</h4>
                         <ol className="list-decimal list-inside mt-2 pl-4">
                             <li>
-                                Try to{' '}
+                                Try to
                                 <Button
-                                    variant="outline"
+                                    className="ml-2"
+                                    variant="destructive"
                                     onClick={() => {
                                         sessionStorage.clear();
                                         localStorage.clear();

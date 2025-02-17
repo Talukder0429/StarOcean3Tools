@@ -390,7 +390,7 @@ const smthItems: Item<Profession.SMTH>[] = [
         item: 'Radiant Sword',
         cost: 2600,
         rating: 70,
-        inventors: new Set(['Gusto', 'Boyd'])
+        inventors: new Set(['Fayt', 'Cliff', 'Nel', 'Gusto', 'Boyd'])
     },
     {
         item: "Ranger's Helm",
