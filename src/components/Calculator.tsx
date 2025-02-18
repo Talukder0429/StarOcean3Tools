@@ -44,12 +44,12 @@ export const Calculator = <P extends Profession>(props: {
     // save new settings
     const updateLocalstorage = (inventors?: Set<Inventor<P>>, item?: Item<P>) => {
         const state: LocalState = {
-            selectedInventors: [...selectedInventors.values().toArray()].map((inventor) => inventor.inventor),
+            selectedInventors: Array.from(selectedInventors).map((inventor) => inventor.inventor),
             selectedItem: selectedItem?.item
         };
 
         if (inventors) {
-            state.selectedInventors = [...inventors.values().toArray()].map((inventor) => inventor.inventor);
+            state.selectedInventors = Array.from(inventors).map((inventor) => inventor.inventor);
         }
 
         if (item) {
@@ -236,16 +236,13 @@ export const Calculator = <P extends Profession>(props: {
         if (!selectedItem) return;
 
         const inventorRequirementMet = (item: Item<P>) => {
-            const selectedInventorNames = new Set([...selectedInventors.values().toArray()].map((i) => i.inventor));
+            const selectedInventorNames = new Set(Array.from(selectedInventors).map((i) => i.inventor));
 
             return selectedInventorNames.intersection(item.inventors).size > 0;
         };
 
         const generatePossibleCosts = (baseCost: number) => {
-            const _costMod = selectedInventors
-                .values()
-                .toArray()
-                .reduce((c, {cost}) => c + cost, 0);
+            const _costMod = Array.from(selectedInventors).reduce((c, {cost}) => c + cost, 0);
 
             // costs = (1 + costMod% + random) x baseCost
             const allCostMods = [
