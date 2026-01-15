@@ -213,7 +213,7 @@ const cookInventorStats: Inventor<Profession.COOK>[] = [
     },
     {
         inventor: 'Mayu',
-        skill: 19,
+        skill: 20,
         time: 0,
         cost: -30
     },
